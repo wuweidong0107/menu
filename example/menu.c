@@ -16,7 +16,7 @@ static const struct shell_menu main_menu = {
 
 int main(int argc, char *argv[])
 {
-    shell_init();
+    shell_init(argc, argv);
     shell_set_menu(&main_menu);
     shell_attach(fileno(stdin));
     return 0;

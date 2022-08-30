@@ -76,6 +76,30 @@ int mainloop_add_fd(int fd, uint32_t events, mainloop_event_func callback,
     return 0;
 }
 
+int mainloop_modify_fd(int fd, uint32_t events)
+{
+    struct mainloop_data *data;
+    struct epoll_event ev;
+    int err;
+
+    if (fd < 0 || fd > MAX_MAINLOOP_ENTRIES -1 )
+        return -EINVAL;
+    
+    data = mainloop_list[fd];
+    if (!data)
+        return -ENXIO;
+    
+    memset(&ev, 0, sizeof(ev));
+    ev.events = events;
+    ev.data.ptr = data;
+    err = epoll_ctl(epoll_fd, EPOLL_CTL_MOD, data->fd, &ev);
+    if (err < 0)
+        return err;
+    data->events = events;
+
+    return 0;
+}
+
 int mainloop_remove_fd(int fd)
 {
     struct mainloop_data *data;

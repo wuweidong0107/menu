@@ -10,6 +10,7 @@ void mainloop_init(void);
 void mainloop_quit(void);
 int mainloop_add_fd(int fd, uint32_t events, mainloop_event_func callback,
                     void *user_data, mainloop_destroy_func destroy);
+int mainloop_modify_fd(int fd, uint32_t events);
 int mainloop_remove_fd(int fd);
 int mainloop_run(void);
 #endif

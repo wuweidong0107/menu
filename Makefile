@@ -9,7 +9,7 @@ src/util.c
 all: ${TARGET}
 
 example/menu: $(SRC)
-	gcc  $^ -o $@
+	gcc  $^ -o $@ -lreadline
 
 clean:
 	rm -f $(TARGET)

@@ -17,7 +17,7 @@ struct shell_menu {
     const struct shell_menu_entry entries[];
 };
 
-void shell_init(void);
+void shell_init(int argc, char *argv[]);
 bool shell_set_menu(const struct shell_menu *menu);
 bool shell_attach(int fd);
 

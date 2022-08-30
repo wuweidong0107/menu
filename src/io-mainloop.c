@@ -12,6 +12,7 @@ struct io {
     int fd;
     uint32_t events;
     io_callback_func_t read_callback;
+    void *read_data;
 };
 
 static void io_callback(int fd, uint32_t events, void *user_data)
@@ -20,7 +21,7 @@ static void io_callback(int fd, uint32_t events, void *user_data)
 
     // ERROR
     if ((events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))) {
-
+        
     }
 
     // READ
@@ -84,4 +85,30 @@ void io_destroy(struct io *io)
 
     mainloop_remove_fd(io->fd);
     io_unref(io);
+}
+
+bool io_set_read_handler(struct io *io, io_callback_func_t callback,
+                    void *user_data)
+{
+    uint32_t events;
+
+    if (!io || io->fd < 0)
+        return false;
+    
+    if(callback)
+        events = io->events | EPOLLIN;
+    else
+        events = io->events & ~EPOLLIN;
+    
+    io->read_callback = callback;
+    io->read_data = user_data;
+
+    if (events == io->events)
+        return true;
+    
+    if(mainloop_modify_fd(io->fd, events) < 0)
+        return false;
+    
+    io->events = events;
+    return true;
 }
